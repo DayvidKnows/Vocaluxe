@@ -1,4 +1,4 @@
-﻿#region license
+#region license
 // This file is part of Vocaluxe.
 // 
 // Vocaluxe is free software: you can redistribute it and/or modify
@@ -17,201 +17,175 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
-using Vocaluxe.Base;
 using VocaluxeLib.Log;
 
-namespace Vocaluxe.Lib.Sound.Record.PortAudio
-{
-    class CPortAudioRecord : CRecordBase, IRecord
-    {
-        private bool _Initialized;
-        private CPortAudioHandle _PaHandle;
-        private PortAudioSharp.PortAudio.PaStreamCallbackDelegate _MyRecProc;
-        private IntPtr[] _RecHandle;
+namespace Vocaluxe.Lib.Sound.Record.PortAudio {
+	class CPortAudioRecord: CRecordBase, IRecord {
+		private bool _Initialized;
+		private CPortAudioHandle _PaHandle;
+		private PortAudioSharp.PortAudio.PaStreamCallbackDelegate _MyRecProc;
+		private IntPtr[] _RecHandle;
 
-        /// <summary>
-        ///     Init PortAudio and list record devices
-        /// </summary>
-        /// <returns>true if success</returns>
-        public override bool Init()
-        {
-            if (!base.Init())
-                return false;
+		/// <summary>
+		///     Init PortAudio and list record devices
+		/// </summary>
+		/// <returns>true if success</returns>
+		public override bool Init() {
+			if (!base.Init())
+				return false;
 
-            try
-            {
-                _PaHandle = new CPortAudioHandle();
+			try {
+				_PaHandle = new CPortAudioHandle();
 
-                int hostAPI = _PaHandle.GetHostApi();
-                int numDevices = PortAudioSharp.PortAudio.Pa_GetDeviceCount();
-                for (int i = 0; i < numDevices; i++)
-                {
-                    PortAudioSharp.PortAudio.PaDeviceInfo info = PortAudioSharp.PortAudio.Pa_GetDeviceInfo(i);
-                    if (info.hostApi == hostAPI && info.maxInputChannels > 0)
-                    {
-                        var dev = new CRecordDevice(i, info.name, info.name + i, info.maxInputChannels);
+				HashSet<int> hostApis = _PaHandle.GetAllHostApis();
+				int numDevices = PortAudioSharp.PortAudio.Pa_GetDeviceCount();
+				for (int i = 0; i < numDevices; i++) {
+					PortAudioSharp.PortAudio.PaDeviceInfo deviceInfo = PortAudioSharp.PortAudio.Pa_GetDeviceInfo(i);
+					if (hostApis.Contains(deviceInfo.hostApi) && deviceInfo.maxInputChannels > 0) {
+						PortAudioSharp.PortAudio.PaHostApiInfo hostApiInfo = PortAudioSharp.PortAudio.Pa_GetHostApiInfo(deviceInfo.hostApi);
+						var dev = new CRecordDevice(i, deviceInfo.name, deviceInfo.name + i, deviceInfo.maxInputChannels, deviceInfo.hostApi, hostApiInfo.name);
 
-                        _Devices.Add(dev);
-                    }
-                }
+						_Devices.Add(dev);
+					}
+				}
 
-                _RecHandle = new IntPtr[_Devices.Count];
-                _MyRecProc = _MyPaStreamCallback;
-                _Initialized = true;
-            }
-            catch (Exception e)
-            {
-                _Initialized = false;
-                CLog.Error("Error initializing PortAudio: " + e.Message);
-                Close();
-                return false;
-            }
+				_RecHandle = new IntPtr[_Devices.Count];
+				_MyRecProc = _MyPaStreamCallback;
+				_Initialized = true;
+			}
+			catch (Exception e) {
+				_Initialized = false;
+				CLog.Error("Error initializing PortAudio: " + e.Message);
+				Close();
+				return false;
+			}
 
-            return true;
-        }
+			return true;
+		}
 
-        /// <summary>
-        ///     Start Voice Capturing
-        /// </summary>
-        /// <returns></returns>
-        public bool Start()
-        {
-            if (!_Initialized)
-                return false;
+		/// <summary>
+		///     Start Voice Capturing
+		/// </summary>
+		/// <returns></returns>
+		public bool Start() {
+			if (!_Initialized)
+				return false;
 
-            Stop();
+			Stop();
 
-            foreach (IntPtr handle in _RecHandle)
-            {
-                int waitcount = 0;
-                while (waitcount < 5 && PortAudioSharp.PortAudio.Pa_IsStreamStopped(handle) == PortAudioSharp.PortAudio.PaError.paStreamIsNotStopped)
-                {
-                    Thread.Sleep(1);
-                    waitcount++;
-                }
-            }
+			foreach (IntPtr handle in _RecHandle) {
+				int waitcount = 0;
+				while (waitcount < 5 && PortAudioSharp.PortAudio.Pa_IsStreamStopped(handle) == PortAudioSharp.PortAudio.PaError.paStreamIsNotStopped) {
+					Thread.Sleep(1);
+					waitcount++;
+				}
+			}
 
-            foreach (CBuffer buffer in _Buffer)
-                buffer.Reset();
+			foreach (CBuffer buffer in _Buffer)
+				buffer.Reset();
 
-            for (int i = 0; i < _RecHandle.Length; i++)
-                _RecHandle[i] = IntPtr.Zero;
+			for (int i = 0; i < _RecHandle.Length; i++)
+				_RecHandle[i] = IntPtr.Zero;
 
-            for (int dev = 0; dev < _Devices.Count; dev++)
-            {
-                bool usingDevice = false;
-                for (int ch = 0; ch < _Devices[dev].Channels; ++ch) {
-                    if (_Devices[dev].PlayerChannel[ch] > 0)
-                        usingDevice = true;
-                }
-                if (usingDevice)
-                {
-                    PortAudioSharp.PortAudio.PaStreamParameters? inputParams = new PortAudioSharp.PortAudio.PaStreamParameters
-                    {
-                        channelCount = _Devices[dev].Channels,
-                        device = _Devices[dev].ID,
-                        sampleFormat = PortAudioSharp.PortAudio.PaSampleFormat.paInt16,
-                        suggestedLatency = PortAudioSharp.PortAudio.Pa_GetDeviceInfo(_Devices[dev].ID).defaultLowInputLatency,
-                        hostApiSpecificStreamInfo = IntPtr.Zero
-                    };
-                    if (!_PaHandle.OpenInputStream(
-                        out _RecHandle[dev],
-                        ref inputParams,
-                        44100,
-                        882,
-                        PortAudioSharp.PortAudio.PaStreamFlags.paNoFlag,
-                        _MyRecProc,
-                        new IntPtr(dev)))
-                        return false;
+			for (int dev = 0; dev < _Devices.Count; dev++) {
+				bool usingDevice = false;
+				for (int ch = 0; ch < _Devices[dev].Channels; ++ch) {
+					if (_Devices[dev].PlayerChannel[ch] > 0)
+						usingDevice = true;
+				}
+				if (usingDevice) {
+					PortAudioSharp.PortAudio.PaStreamParameters? inputParams = new PortAudioSharp.PortAudio.PaStreamParameters {
+						channelCount = _Devices[dev].Channels,
+						device = _Devices[dev].ID,
+						sampleFormat = PortAudioSharp.PortAudio.PaSampleFormat.paInt16,
+						suggestedLatency = PortAudioSharp.PortAudio.Pa_GetDeviceInfo(_Devices[dev].ID).defaultLowInputLatency,
+						hostApiSpecificStreamInfo = IntPtr.Zero
+					};
+					if (!_PaHandle.OpenInputStream(
+						out _RecHandle[dev],
+						ref inputParams,
+						44100,
+						882,
+						PortAudioSharp.PortAudio.PaStreamFlags.paNoFlag,
+						_MyRecProc,
+						new IntPtr(dev)))
+						return false;
 
-                    if (_PaHandle.CheckError("Start Stream (rec)", PortAudioSharp.PortAudio.Pa_StartStream(_RecHandle[dev])))
-                        return false;
-                }
-            }
-            return true;
-        }
+					if (_PaHandle.CheckError("Start Stream (rec)", PortAudioSharp.PortAudio.Pa_StartStream(_RecHandle[dev])))
+						return false;
+				}
+			}
+			return true;
+		}
 
-        /// <summary>
-        ///     Stop Voice Capturing
-        /// </summary>
-        /// <returns></returns>
-        public bool Stop()
-        {
-            if (!_Initialized)
-                return false;
+		/// <summary>
+		///     Stop Voice Capturing
+		/// </summary>
+		/// <returns></returns>
+		public bool Stop() {
+			if (!_Initialized)
+				return false;
 
-            foreach (IntPtr handle in _RecHandle)
-            {
-                if (handle != IntPtr.Zero)
-                {
-                    PortAudioSharp.PortAudio.Pa_StopStream(handle);
-                    PortAudioSharp.PortAudio.Pa_CloseStream(handle);
-                }
-            }
-            _RecHandle = new IntPtr[_Devices.Count];
-            return true;
-        }
+			foreach (IntPtr handle in _RecHandle) {
+				if (handle != IntPtr.Zero) {
+					PortAudioSharp.PortAudio.Pa_StopStream(handle);
+					PortAudioSharp.PortAudio.Pa_CloseStream(handle);
+				}
+			}
+			_RecHandle = new IntPtr[_Devices.Count];
+			return true;
+		}
 
-        /// <summary>
-        ///     Stop all voice capturing streams and terminate PortAudio
-        /// </summary>
-        public override void Close()
-        {
-            if (_RecHandle != null && _RecHandle.Length > 0)
-            {
-                foreach (IntPtr handle in _RecHandle)
-                {
-                    if (handle != IntPtr.Zero)
-                    {
-                        _PaHandle.CloseStream(handle);
-                    }
-                }
+		/// <summary>
+		///     Stop all voice capturing streams and terminate PortAudio
+		/// </summary>
+		public override void Close() {
+			if (_RecHandle != null && _RecHandle.Length > 0) {
+				foreach (IntPtr handle in _RecHandle) {
+					if (handle != IntPtr.Zero) {
+						_PaHandle.CloseStream(handle);
+					}
+				}
 
-                _RecHandle = new IntPtr[_Devices.Count];
-            }
-            if (_PaHandle != null)
-            {
-                _PaHandle.Close();
-                _PaHandle = null;
-            }
+				_RecHandle = new IntPtr[_Devices.Count];
+			}
+			if (_PaHandle != null) {
+				_PaHandle.Close();
+				_PaHandle = null;
+			}
 
-            _Initialized = false;
+			_Initialized = false;
 
-            base.Close();
-        }
+			base.Close();
+		}
 
-        private PortAudioSharp.PortAudio.PaStreamCallbackResult _MyPaStreamCallback(
-            IntPtr input,
-            IntPtr output,
-            uint frameCount,
-            ref PortAudioSharp.PortAudio.PaStreamCallbackTimeInfo timeInfo,
-            PortAudioSharp.PortAudio.PaStreamCallbackFlags statusFlags,
-            IntPtr userData)
-        {
-            try
-            {
-                if (frameCount > 0 && input != IntPtr.Zero)
-                {
-                    CRecordDevice dev = _Devices[userData.ToInt32()];
-                    uint numBytes;
-                    numBytes = frameCount * (uint)dev.Channels * 2;
+		private PortAudioSharp.PortAudio.PaStreamCallbackResult _MyPaStreamCallback(
+			IntPtr input,
+			IntPtr output,
+			uint frameCount,
+			ref PortAudioSharp.PortAudio.PaStreamCallbackTimeInfo timeInfo,
+			PortAudioSharp.PortAudio.PaStreamCallbackFlags statusFlags,
+			IntPtr userData) {
+			try {
+				if (frameCount > 0 && input != IntPtr.Zero) {
+					CRecordDevice dev = _Devices[userData.ToInt32()];
+					uint numBytes;
+					numBytes = frameCount * (uint)dev.Channels * 2;
 
-                    byte[] recbuffer = new byte[numBytes];
+					byte[] recbuffer = new byte[numBytes];
 
-                    // copy from managed to unmanaged memory
-                    Marshal.Copy(input, recbuffer, 0, (int)numBytes);
-                    _HandleData(dev, recbuffer);
-                }
-            }
-            catch (Exception e)
-            {
-                CLog.Error("Error on Stream Callback (rec): " + e);
-            }
+					// copy from managed to unmanaged memory
+					Marshal.Copy(input, recbuffer, 0, (int)numBytes);
+					_HandleData(dev, recbuffer);
+				}
+			}
+			catch (Exception e) {
+				CLog.Error("Error on Stream Callback (rec): " + e);
+			}
 
-            return PortAudioSharp.PortAudio.PaStreamCallbackResult.paContinue;
-        }
-    }
+			return PortAudioSharp.PortAudio.PaStreamCallbackResult.paContinue;
+		}
+	}
 }

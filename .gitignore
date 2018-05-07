@@ -73,3 +73,9 @@ tx.exe
 /PitchTracker/obj
 /Logs
 /Tests/bin
+/Output/Serilog.xml
+/Output/Serilog.Sinks.TextWriter.xml
+/Output/Serilog.Sinks.File.xml
+/Output/Serilog.Sinks.Console.xml
+/Output/Serilog.Enrichers.Thread.xml
+/Output/Newtonsoft.Json.xml

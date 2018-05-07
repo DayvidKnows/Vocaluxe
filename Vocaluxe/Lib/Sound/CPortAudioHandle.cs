@@ -1,4 +1,4 @@
-﻿#region license
+#region license
 // This file is part of Vocaluxe.
 // 
 // Vocaluxe is free software: you can redistribute it and/or modify
@@ -15,224 +15,213 @@
 // along with Vocaluxe. If not, see <http://www.gnu.org/licenses/>.
 #endregion
 
+using PortAudioSharp;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using PortAudioSharp;
-using Vocaluxe.Base;
 using VocaluxeLib.Log;
 
-namespace Vocaluxe.Lib.Sound
-{
-    /// <summary>
-    ///     PortAudio can be used for record and playback
-    ///     So do some common stuff here and make sure those 2 do not interfere
-    ///     Basic lifetime: On Init() get a new handle, close/dispose it in your close/dispose
-    ///     DO NEVER use following Pa_* functions other than the ones from this class:
-    ///     Initialize, Terminate, OpenStream, CloseStream
-    /// </summary>
-    class CPortAudioHandle : IDisposable
-    {
-        private static int _RefCount;
-        private static readonly object _Mutex = new object();
+namespace Vocaluxe.Lib.Sound {
+	/// <summary>
+	///     PortAudio can be used for record and playback
+	///     So do some common stuff here and make sure those 2 do not interfere
+	///     Basic lifetime: On Init() get a new handle, close/dispose it in your close/dispose
+	///     DO NEVER use following Pa_* functions other than the ones from this class:
+	///     Initialize, Terminate, OpenStream, CloseStream
+	/// </summary>
+	class CPortAudioHandle: IDisposable {
+		private static int _RefCount;
+		private static readonly object _Mutex = new object();
 
-        private bool _Disposed;
-        private readonly List<IntPtr> _Streams = new List<IntPtr>();
+		private bool _Disposed;
+		private readonly List<IntPtr> _Streams = new List<IntPtr>();
 
-        /// <summary>
-        ///     Initializes PortAudio library (if required)
-        /// </summary>
-        public CPortAudioHandle()
-        {
-            lock (_Mutex)
-            {
-                if (_RefCount == 0)
-                {
-                    if (CheckError("Initialize", PortAudio.Pa_Initialize()))
-                        throw new Exception();
-                }
-                _RefCount++;
-            }
-        }
+		/// <summary>
+		///     Initializes PortAudio library (if required)
+		/// </summary>
+		public CPortAudioHandle() {
+			lock (_Mutex) {
+				if (_RefCount == 0) {
+					if (CheckError("Initialize", PortAudio.Pa_Initialize()))
+						throw new Exception();
+				}
+				_RefCount++;
+			}
+		}
 
-        ~CPortAudioHandle()
-        {
-            _Dispose(false);
-        }
+		~CPortAudioHandle() {
+			_Dispose(false);
+		}
 
-        private void _Dispose(bool disposing)
-        {
-            if (_Disposed)
-                return;
-            if (!disposing)
-                CLog.Debug("Did not close CPortAudioHandle");
-            //Make sure we do not leek any streams as we may keep PA open
-            if (_Streams.Count > 0)
-            {
-                CLog.Debug("Did not close " + _Streams.Count + "PortAudio-Stream(s)");
-                while (_Streams.Count > 0)
-                    CloseStream(_Streams[0]);
-            }
-            lock (_Mutex)
-            {
-                if (_Disposed)
-                    return;
-                Debug.Assert(_RefCount > 0);
-                _RefCount--;
-                if (_RefCount == 0)
-                {
-                    try
-                    {
-                        PortAudio.Pa_Terminate();
-                    }
-                    catch (Exception ex)
-                    {
-                        CLog.Error(ex, "Error disposing PortAudio");
-                    }
-                }
-                _Disposed = true;
-            }
-        }
+		private void _Dispose(bool disposing) {
+			if (_Disposed)
+				return;
+			if (!disposing)
+				CLog.Debug("Did not close CPortAudioHandle");
+			//Make sure we do not leek any streams as we may keep PA open
+			if (_Streams.Count > 0) {
+				CLog.Debug("Did not close " + _Streams.Count + "PortAudio-Stream(s)");
+				while (_Streams.Count > 0)
+					CloseStream(_Streams[0]);
+			}
+			lock (_Mutex) {
+				if (_Disposed)
+					return;
+				Debug.Assert(_RefCount > 0);
+				_RefCount--;
+				if (_RefCount == 0) {
+					try {
+						PortAudio.Pa_Terminate();
+					}
+					catch (Exception ex) {
+						CLog.Error(ex, "Error disposing PortAudio");
+					}
+				}
+				_Disposed = true;
+			}
+		}
 
-        public void Dispose()
-        {
-            _Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+		public void Dispose() {
+			_Dispose(true);
+			GC.SuppressFinalize(this);
+		}
 
-        /// <summary>
-        ///     Close the PortAudio handle once you are done
-        /// </summary>
-        public void Close()
-        {
-            Dispose();
-        }
+		/// <summary>
+		///     Close the PortAudio handle once you are done
+		/// </summary>
+		public void Close() {
+			Dispose();
+		}
 
-        public PortAudio.PaError OpenStream(out IntPtr stream, ref PortAudio.PaStreamParameters? inputParameters, ref PortAudio.PaStreamParameters? outputParameters,
-                                            double sampleRate, uint framesPerBuffer, PortAudio.PaStreamFlags streamFlags,
-                                            PortAudio.PaStreamCallbackDelegate streamCallback, IntPtr userData)
-        {
-            lock (_Mutex)
-            {
-                if (_Disposed)
-                    throw new ObjectDisposedException("PortAudioHandle already disposed");
+		public PortAudio.PaError OpenStream(out IntPtr stream, ref PortAudio.PaStreamParameters? inputParameters, ref PortAudio.PaStreamParameters? outputParameters,
+											double sampleRate, uint framesPerBuffer, PortAudio.PaStreamFlags streamFlags,
+											PortAudio.PaStreamCallbackDelegate streamCallback, IntPtr userData) {
+			lock (_Mutex) {
+				if (_Disposed)
+					throw new ObjectDisposedException("PortAudioHandle already disposed");
 
-                PortAudio.PaError res = PortAudio.Pa_OpenStream(out stream, ref inputParameters, ref outputParameters, sampleRate, framesPerBuffer, streamFlags, streamCallback,
-                                                                userData);
-                if (res == PortAudio.PaError.paNoError)
-                    _Streams.Add(stream);
-                return res;
-            }
-        }
+				PortAudio.PaError res = PortAudio.Pa_OpenStream(out stream, ref inputParameters, ref outputParameters, sampleRate, framesPerBuffer, streamFlags, streamCallback,
+																userData);
+				if (res == PortAudio.PaError.paNoError)
+					_Streams.Add(stream);
+				return res;
+			}
+		}
 
-        /// <summary>
-        ///     Convenience method to safely open an input stream and log potential error
-        /// </summary>
-        /// <param name="stream"></param>
-        /// <param name="inputParameters"></param>
-        /// <param name="sampleRate"></param>
-        /// <param name="framesPerBuffer"></param>
-        /// <param name="streamFlags"></param>
-        /// <param name="streamCallback"></param>
-        /// <param name="userData"></param>
-        /// <returns>True on success</returns>
-        public bool OpenInputStream(out IntPtr stream, ref PortAudio.PaStreamParameters? inputParameters,
-                                    double sampleRate, uint framesPerBuffer, PortAudio.PaStreamFlags streamFlags,
-                                    PortAudio.PaStreamCallbackDelegate streamCallback, IntPtr userData)
-        {
-            PortAudio.PaStreamParameters? outputParameters = null;
-            return
-                !CheckError("OpenInputStream",
-                            OpenStream(out stream, ref inputParameters, ref outputParameters, sampleRate, framesPerBuffer, streamFlags, streamCallback, userData));
-        }
+		/// <summary>
+		///     Convenience method to safely open an input stream and log potential error
+		/// </summary>
+		/// <param name="stream"></param>
+		/// <param name="inputParameters"></param>
+		/// <param name="sampleRate"></param>
+		/// <param name="framesPerBuffer"></param>
+		/// <param name="streamFlags"></param>
+		/// <param name="streamCallback"></param>
+		/// <param name="userData"></param>
+		/// <returns>True on success</returns>
+		public bool OpenInputStream(out IntPtr stream, ref PortAudio.PaStreamParameters? inputParameters,
+									double sampleRate, uint framesPerBuffer, PortAudio.PaStreamFlags streamFlags,
+									PortAudio.PaStreamCallbackDelegate streamCallback, IntPtr userData) {
+			PortAudio.PaStreamParameters? outputParameters = null;
+			return
+				!CheckError("OpenInputStream",
+							OpenStream(out stream, ref inputParameters, ref outputParameters, sampleRate, framesPerBuffer, streamFlags, streamCallback, userData));
+		}
 
-        /// <summary>
-        ///     Convenience method to safely open an output stream and log potential error
-        /// </summary>
-        /// <param name="stream"></param>
-        /// <param name="outputParameters"></param>
-        /// <param name="sampleRate"></param>
-        /// <param name="framesPerBuffer"></param>
-        /// <param name="streamFlags"></param>
-        /// <param name="streamCallback"></param>
-        /// <param name="userData"></param>
-        /// <returns>True on success</returns>
-        public bool OpenOutputStream(out IntPtr stream, ref PortAudio.PaStreamParameters? outputParameters,
-                                     double sampleRate, uint framesPerBuffer, PortAudio.PaStreamFlags streamFlags,
-                                     PortAudio.PaStreamCallbackDelegate streamCallback, IntPtr userData)
-        {
-            PortAudio.PaStreamParameters? inputParameters = null;
-            return
-                !CheckError("OpenOutputStream",
-                            OpenStream(out stream, ref inputParameters, ref outputParameters, sampleRate, framesPerBuffer, streamFlags, streamCallback, userData));
-        }
+		/// <summary>
+		///     Convenience method to safely open an output stream and log potential error
+		/// </summary>
+		/// <param name="stream"></param>
+		/// <param name="outputParameters"></param>
+		/// <param name="sampleRate"></param>
+		/// <param name="framesPerBuffer"></param>
+		/// <param name="streamFlags"></param>
+		/// <param name="streamCallback"></param>
+		/// <param name="userData"></param>
+		/// <returns>True on success</returns>
+		public bool OpenOutputStream(out IntPtr stream, ref PortAudio.PaStreamParameters? outputParameters,
+									 double sampleRate, uint framesPerBuffer, PortAudio.PaStreamFlags streamFlags,
+									 PortAudio.PaStreamCallbackDelegate streamCallback, IntPtr userData) {
+			PortAudio.PaStreamParameters? inputParameters = null;
+			return
+				!CheckError("OpenOutputStream",
+							OpenStream(out stream, ref inputParameters, ref outputParameters, sampleRate, framesPerBuffer, streamFlags, streamCallback, userData));
+		}
 
-        public void CloseStream(IntPtr stream)
-        {
-            lock (_Mutex)
-            {
-                if (_Disposed)
-                    throw new ObjectDisposedException("PortAudioHandle already disposed");
+		public void CloseStream(IntPtr stream) {
+			lock (_Mutex) {
+				if (_Disposed)
+					throw new ObjectDisposedException("PortAudioHandle already disposed");
 
-                try
-                {
-                    PortAudio.Pa_CloseStream(stream);
-                }
-                catch (Exception ex)
-                {
-                    CLog.Error(ex, "Error closing stream:");
-                }
-                _Streams.Remove(stream);
-            }
-        }
+				try {
+					PortAudio.Pa_CloseStream(stream);
+				}
+				catch (Exception ex) {
+					CLog.Error(ex, "Error closing stream:");
+				}
+				_Streams.Remove(stream);
+			}
+		}
 
-        /// <summary>
-        ///     Checks if PA returned an error and logs it
-        ///     Returns true on error
-        /// </summary>
-        /// <param name="action">Action identifier (E.g. openStream)</param>
-        /// <param name="errorCode">Result returned by Pa_* call</param>
-        /// <returns>True on error</returns>
-        public bool CheckError(String action, PortAudio.PaError errorCode)
-        {
-            if (_Disposed)
-                throw new ObjectDisposedException("PortAudioHandle already disposed");
+		/// <summary>
+		///     Checks if PA returned an error and logs it
+		///     Returns true on error
+		/// </summary>
+		/// <param name="action">Action identifier (E.g. openStream)</param>
+		/// <param name="errorCode">Result returned by Pa_* call</param>
+		/// <returns>True on error</returns>
+		public bool CheckError(String action, PortAudio.PaError errorCode) {
+			if (_Disposed)
+				throw new ObjectDisposedException("PortAudioHandle already disposed");
 
-            if (errorCode != PortAudio.PaError.paNoError)
-            {
-                CLog.Error(action + " error: " + PortAudio.Pa_GetErrorText(errorCode));
-                if (errorCode == PortAudio.PaError.paUnanticipatedHostError)
-                {
-                    PortAudio.PaHostErrorInfo errorInfo = PortAudio.Pa_GetLastHostErrorInfo();
-                    CLog.Error("- Host error API type: " + errorInfo.hostApiType);
-                    CLog.Error("- Host error code: " + errorInfo.errorCode);
-                    CLog.Error("- Host error text: " + errorInfo.errorText);
-                }
-                return true;
-            }
+			if (errorCode != PortAudio.PaError.paNoError) {
+				CLog.Error(action + " error: " + PortAudio.Pa_GetErrorText(errorCode));
+				if (errorCode == PortAudio.PaError.paUnanticipatedHostError) {
+					PortAudio.PaHostErrorInfo errorInfo = PortAudio.Pa_GetLastHostErrorInfo();
+					CLog.Error("- Host error API type: " + errorInfo.hostApiType);
+					CLog.Error("- Host error code: " + errorInfo.errorCode);
+					CLog.Error("- Host error text: " + errorInfo.errorText);
+				}
+				return true;
+			}
 
-            return false;
-        }
+			return false;
+		}
 
-        /// <summary>
-        ///     Selects the most appropriate host api
-        /// </summary>
-        /// <returns>The most appropriate host api</returns>
-        public int GetHostApi()
-        {
-            if (_Disposed)
-                throw new ObjectDisposedException("PortAudioHandle already disposed");
+		/// <summary>
+		///     Selects the most appropriate host api
+		/// </summary>
+		/// <returns>The most appropriate host api</returns>
+		public int GetHostApi() {
+			if (_Disposed)
+				throw new ObjectDisposedException("PortAudioHandle already disposed");
 
-            int selectedHostApi = PortAudio.Pa_GetDefaultHostApi();
-            int apiCount = PortAudio.Pa_GetHostApiCount();
-            for (int i = 0; i < apiCount; i++)
-            {
-                PortAudio.PaHostApiInfo apiInfo = PortAudio.Pa_GetHostApiInfo(i);
-                if ((apiInfo.type == PortAudio.PaHostApiTypeId.paDirectSound)
-                    || (apiInfo.type == PortAudio.PaHostApiTypeId.paALSA))
-                    selectedHostApi = i;
-            }
-            return selectedHostApi;
-        }
-    }
+			int selectedHostApi = PortAudio.Pa_GetDefaultHostApi();
+			int apiCount = PortAudio.Pa_GetHostApiCount();
+			for (int i = 0; i < apiCount; i++) {
+				PortAudio.PaHostApiInfo apiInfo = PortAudio.Pa_GetHostApiInfo(i);
+				if ((apiInfo.type == PortAudio.PaHostApiTypeId.paDirectSound)
+					|| (apiInfo.type == PortAudio.PaHostApiTypeId.paALSA))
+					selectedHostApi = i;
+			}
+			return selectedHostApi;
+		}
+
+		/// <summary>
+		///     Selects all host apis
+		/// </summary>
+		/// <returns>All host apis</returns>
+		public HashSet<int> GetAllHostApis() {
+			if (_Disposed)
+				throw new ObjectDisposedException("PortAudioHandle already disposed");
+
+			HashSet<int> selectedHostApis = new HashSet<int>();
+			int apiCount = PortAudio.Pa_GetHostApiCount();
+			for (int i = 0; i < apiCount; i++) {
+				selectedHostApis.Add(i);
+			}
+
+			return selectedHostApis.Count == 0 ? new HashSet<int> { PortAudio.Pa_GetDefaultHostApi() } : selectedHostApis;
+		}
+	}
 }

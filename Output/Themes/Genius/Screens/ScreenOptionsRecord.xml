@@ -30,7 +30,7 @@
       <Color Name="Player1" />
       <Rect>
         <X>75</X>
-        <Y>225</Y>
+        <Y>264</Y>
         <W>40</W>
         <H>40</H>
         <Z>0</Z>
@@ -41,7 +41,7 @@
       <Color Name="Player2" />
       <Rect>
         <X>75</X>
-        <Y>285</Y>
+        <Y>317</Y>
         <W>40</W>
         <H>40</H>
         <Z>0</Z>
@@ -52,7 +52,7 @@
       <Color Name="Player3" />
       <Rect>
         <X>75</X>
-        <Y>345</Y>
+        <Y>379</Y>
         <W>40</W>
         <H>40</H>
         <Z>0</Z>
@@ -63,7 +63,7 @@
       <Color Name="Player4" />
       <Rect>
         <X>75</X>
-        <Y>405</Y>
+        <Y>423</Y>
         <W>40</W>
         <H>40</H>
         <Z>0</Z>
@@ -74,7 +74,7 @@
       <Color Name="Player5" />
       <Rect>
         <X>75</X>
-        <Y>465</Y>
+        <Y>476</Y>
         <W>40</W>
         <H>40</H>
         <Z>0</Z>
@@ -85,7 +85,7 @@
       <Color Name="Player6" />
       <Rect>
         <X>75</X>
-        <Y>525</Y>
+        <Y>529</Y>
         <W>40</W>
         <H>40</H>
         <Z>0</Z>
@@ -111,7 +111,7 @@
       <Color Name="Visible" />
       <Rect>
         <X>390</X>
-        <Y>234</Y>
+        <Y>273</Y>
         <W>100</W>
         <H>16</H>
         <Z>0</Z>
@@ -122,7 +122,7 @@
       <Color Name="Visible" />
       <Rect>
         <X>390</X>
-        <Y>296</Y>
+        <Y>326</Y>
         <W>100</W>
         <H>16</H>
         <Z>0</Z>
@@ -133,7 +133,7 @@
       <Color Name="Visible" />
       <Rect>
         <X>390</X>
-        <Y>354</Y>
+        <Y>379</Y>
         <W>100</W>
         <H>16</H>
         <Z>0</Z>
@@ -144,7 +144,7 @@
       <Color Name="Visible" />
       <Rect>
         <X>390</X>
-        <Y>416</Y>
+        <Y>432</Y>
         <W>100</W>
         <H>16</H>
         <Z>0</Z>
@@ -155,7 +155,7 @@
       <Color Name="Visible" />
       <Rect>
         <X>390</X>
-        <Y>474</Y>
+        <Y>485</Y>
         <W>100</W>
         <H>16</H>
         <Z>0</Z>
@@ -166,7 +166,7 @@
       <Color Name="Visible" />
       <Rect>
         <X>390</X>
-        <Y>536</Y>
+        <Y>538</Y>
         <W>100</W>
         <H>16</H>
         <Z>0</Z>
@@ -190,7 +190,21 @@
     </Text>
     <Text Name="Text2">
       <X>75</X>
-      <Y>106</Y>
+      <Y>107</Y>
+      <Z>0</Z>
+      <H>27</H>
+      <MaxW>0</MaxW>
+      <Color Name="TextColor" />
+      <SelColor Name="TextSelColor" />
+      <Align>Left</Align>
+      <ResizeAlign>Center</ResizeAlign>
+      <Style>Bold</Style>
+      <Font>Outline</Font>
+      <Text>API</Text>
+    </Text>
+    <Text Name="Text3">
+      <X>75</X>
+      <Y>160</Y>
       <Z>0</Z>
       <H>27</H>
       <MaxW>0</MaxW>
@@ -202,9 +216,9 @@
       <Font>Outline</Font>
       <Text>TR_SCREENORECORD_DEVICE</Text>
     </Text>
-    <Text Name="Text3">
+    <Text Name="Text4">
       <X>75</X>
-      <Y>167</Y>
+      <Y>213</Y>
       <Z>0</Z>
       <H>27</H>
       <MaxW>0</MaxW>
@@ -236,7 +250,7 @@
     </Text>
     <Text Name="TextPlayer1">
       <X>125</X>
-      <Y>227</Y>
+      <Y>266</Y>
       <Z>0</Z>
       <H>27</H>
       <MaxW>0</MaxW>
@@ -250,7 +264,7 @@
     </Text>
     <Text Name="TextPlayer2">
       <X>125</X>
-      <Y>287</Y>
+      <Y>319</Y>
       <Z>0</Z>
       <H>27</H>
       <MaxW>0</MaxW>
@@ -264,7 +278,7 @@
     </Text>
     <Text Name="TextPlayer3">
       <X>125</X>
-      <Y>347</Y>
+      <Y>372</Y>
       <Z>0</Z>
       <H>27</H>
       <MaxW>0</MaxW>
@@ -278,7 +292,7 @@
     </Text>
     <Text Name="TextPlayer4">
       <X>125</X>
-      <Y>407</Y>
+      <Y>425</Y>
       <Z>0</Z>
       <H>27</H>
       <MaxW>0</MaxW>
@@ -292,7 +306,7 @@
     </Text>
     <Text Name="TextPlayer5">
       <X>125</X>
-      <Y>467</Y>
+      <Y>478</Y>
       <Z>0</Z>
       <H>27</H>
       <MaxW>0</MaxW>
@@ -306,7 +320,7 @@
     </Text>
     <Text Name="TextPlayer6">
       <X>125</X>
-      <Y>527</Y>
+      <Y>531</Y>
       <Z>0</Z>
       <H>27</H>
       <MaxW>0</MaxW>
@@ -320,7 +334,7 @@
     </Text>
     <Text Name="TextDelayPlayer1">
       <X>320</X>
-      <Y>227</Y>
+      <Y>266</Y>
       <Z>-1</Z>
       <H>27</H>
       <MaxW>100</MaxW>
@@ -333,7 +347,7 @@
       <Text /></Text>
     <Text Name="TextDelayPlayer2">
       <X>320</X>
-      <Y>287</Y>
+      <Y>319</Y>
       <Z>-1</Z>
       <H>27</H>
       <MaxW>100</MaxW>
@@ -346,7 +360,7 @@
       <Text /></Text>
     <Text Name="TextDelayPlayer3">
       <X>320</X>
-      <Y>347</Y>
+      <Y>372</Y>
       <Z>-1</Z>
       <H>27</H>
       <MaxW>100</MaxW>
@@ -359,7 +373,7 @@
       <Text /></Text>
     <Text Name="TextDelayPlayer4">
       <X>320</X>
-      <Y>407</Y>
+      <Y>425</Y>
       <Z>-1</Z>
       <H>27</H>
       <MaxW>100</MaxW>
@@ -372,7 +386,7 @@
       <Text /></Text>
     <Text Name="TextDelayPlayer5">
       <X>320</X>
-      <Y>467</Y>
+      <Y>478</Y>
       <Z>-1</Z>
       <H>27</H>
       <MaxW>100</MaxW>
@@ -385,7 +399,7 @@
       <Text /></Text>
     <Text Name="TextDelayPlayer6">
       <X>320</X>
-      <Y>527</Y>
+      <Y>531</Y>
       <Z>-1</Z>
       <H>27</H>
       <MaxW>100</MaxW>
@@ -472,7 +486,7 @@
   <SongMenus />
   <Lyrics />
   <SelectSlides>
-    <SelectSlide Name="SelectSlideRecordDevices">
+  <SelectSlide Name="SelectSlideRecordApis">
       <Skin/>
       <SkinArrowLeft>SelectSlideArrowLeft</SkinArrowLeft>
       <SkinArrowRight>SelectSlideArrowRight</SkinArrowRight>
@@ -514,6 +528,90 @@
       <TextStyle>Bold</TextStyle>
       <NumVisible>1</NumVisible>
     </SelectSlide>
+    <SelectSlide Name="SelectSlideRecordDevices">
+      <Skin/>
+      <SkinArrowLeft>SelectSlideArrowLeft</SkinArrowLeft>
+      <SkinArrowRight>SelectSlideArrowRight</SkinArrowRight>
+      <SkinSelected>SelectSlide</SkinSelected>
+      <SkinArrowLeftSelected>SelectSlideArrowLeft</SkinArrowLeftSelected>
+      <SkinArrowRightSelected>SelectSlideArrowRight</SkinArrowRightSelected>
+      <Rect>
+        <X>500</X>
+        <Y>153</Y>
+        <W>715</W>
+        <H>50</H>
+        <Z>0</Z>
+      </Rect>
+      <RectArrowLeft>
+        <X>505</X>
+        <Y>158</Y>
+        <W>40</W>
+        <H>40</H>
+        <Z>0</Z>
+      </RectArrowLeft>
+      <RectArrowRight>
+        <X>1170</X>
+        <Y>158</Y>
+        <W>40</W>
+        <H>40</H>
+        <Z>0</Z>
+      </RectArrowRight>
+      <Color Name="SelectSlideColor" />
+      <SelColor Name="SelectSlideSelColor" />
+      <ArrowColor Name="ArrowColor" />
+      <ArrowSelColor Name="ArrowSelColor" />
+      <TextColor Name="TextColorAlpha" />
+      <TextSelColor Name="TextSelColor" />
+      <TextH>27</TextH>
+      <TextRelativeX>50</TextRelativeX>
+      <TextRelativeY>0</TextRelativeY>
+      <TextMaxW>616</TextMaxW>
+      <TextFont>Outline</TextFont>
+      <TextStyle>Bold</TextStyle>
+      <NumVisible>1</NumVisible>
+    </SelectSlide>
+	<SelectSlide Name="SelectSlideDelay">
+      <Skin/>
+      <SkinArrowLeft>SelectSlideArrowLeft</SkinArrowLeft>
+      <SkinArrowRight>SelectSlideArrowRight</SkinArrowRight>
+      <SkinSelected>SelectSlide</SkinSelected>
+      <SkinArrowLeftSelected>SelectSlideArrowLeft</SkinArrowLeftSelected>
+      <SkinArrowRightSelected>SelectSlideArrowRight</SkinArrowRightSelected>
+      <Rect>
+        <X>500</X>
+        <Y>206</Y>
+        <W>715</W>
+        <H>50</H>
+        <Z>0</Z>
+      </Rect>
+      <RectArrowLeft>
+        <X>505</X>
+        <Y>211</Y>
+        <W>40</W>
+        <H>40</H>
+        <Z>0</Z>
+      </RectArrowLeft>
+      <RectArrowRight>
+        <X>1170</X>
+        <Y>211</Y>
+        <W>40</W>
+        <H>40</H>
+        <Z>0</Z>
+      </RectArrowRight>
+      <Color Name="SelectSlideColor" />
+      <SelColor Name="SelectSlideSelColor" />
+      <ArrowColor Name="ArrowColor" />
+      <ArrowSelColor Name="ArrowSelColor" />
+      <TextColor Name="TextColorAlpha" />
+      <TextSelColor Name="TextSelColor" />
+      <TextH>27</TextH>
+      <TextRelativeX>50</TextRelativeX>
+      <TextRelativeY>0</TextRelativeY>
+      <TextMaxW>120</TextMaxW>
+      <TextFont>Outline</TextFont>
+      <TextStyle>Bold</TextStyle>
+      <NumVisible>5</NumVisible>
+    </SelectSlide>
     <SelectSlide Name="SelectSlideRecordPlayer1">
       <Skin/>
       <SkinArrowLeft>SelectSlideArrowLeft</SkinArrowLeft>
@@ -523,21 +621,21 @@
       <SkinArrowRightSelected>SelectSlideArrowRight</SkinArrowRightSelected>
       <Rect>
         <X>500</X>
-        <Y>220</Y>
+        <Y>259</Y>
         <W>715</W>
         <H>50</H>
         <Z>0</Z>
       </Rect>
       <RectArrowLeft>
         <X>505</X>
-        <Y>225</Y>
+        <Y>264</Y>
         <W>40</W>
         <H>40</H>
         <Z>0</Z>
       </RectArrowLeft>
       <RectArrowRight>
         <X>1170</X>
-        <Y>225</Y>
+        <Y>264</Y>
         <W>40</W>
         <H>40</H>
         <Z>0</Z>
@@ -565,21 +663,21 @@
       <SkinArrowRightSelected>SelectSlideArrowRight</SkinArrowRightSelected>
       <Rect>
         <X>500</X>
-        <Y>280</Y>
+        <Y>312</Y>
         <W>715</W>
         <H>50</H>
         <Z>0</Z>
       </Rect>
       <RectArrowLeft>
         <X>505</X>
-        <Y>285</Y>
+        <Y>317</Y>
         <W>40</W>
         <H>40</H>
         <Z>0</Z>
       </RectArrowLeft>
       <RectArrowRight>
         <X>1170</X>
-        <Y>285</Y>
+        <Y>317</Y>
         <W>40</W>
         <H>40</H>
         <Z>0</Z>
@@ -607,21 +705,21 @@
       <SkinArrowRightSelected>SelectSlideArrowRight</SkinArrowRightSelected>
       <Rect>
         <X>500</X>
-        <Y>340</Y>
+        <Y>365</Y>
         <W>715</W>
         <H>50</H>
         <Z>0</Z>
       </Rect>
       <RectArrowLeft>
         <X>505</X>
-        <Y>345</Y>
+        <Y>370</Y>
         <W>40</W>
         <H>40</H>
         <Z>0</Z>
       </RectArrowLeft>
       <RectArrowRight>
         <X>1170</X>
-        <Y>345</Y>
+        <Y>370</Y>
         <W>40</W>
         <H>40</H>
         <Z>0</Z>
@@ -649,21 +747,21 @@
       <SkinArrowRightSelected>SelectSlideArrowRight</SkinArrowRightSelected>
       <Rect>
         <X>500</X>
-        <Y>400</Y>
+        <Y>418</Y>
         <W>715</W>
         <H>50</H>
         <Z>0</Z>
       </Rect>
       <RectArrowLeft>
         <X>505</X>
-        <Y>405</Y>
+        <Y>423</Y>
         <W>40</W>
         <H>40</H>
         <Z>0</Z>
       </RectArrowLeft>
       <RectArrowRight>
         <X>1170</X>
-        <Y>405</Y>
+        <Y>423</Y>
         <W>40</W>
         <H>40</H>
         <Z>0</Z>
@@ -691,21 +789,21 @@
       <SkinArrowRightSelected>SelectSlideArrowRight</SkinArrowRightSelected>
       <Rect>
         <X>500</X>
-        <Y>460</Y>
+        <Y>471</Y>
         <W>715</W>
         <H>50</H>
         <Z>0</Z>
       </Rect>
       <RectArrowLeft>
         <X>505</X>
-        <Y>465</Y>
+        <Y>476</Y>
         <W>40</W>
         <H>40</H>
         <Z>0</Z>
       </RectArrowLeft>
       <RectArrowRight>
         <X>1170</X>
-        <Y>465</Y>
+        <Y>476</Y>
         <W>40</W>
         <H>40</H>
         <Z>0</Z>
@@ -733,21 +831,21 @@
       <SkinArrowRightSelected>SelectSlideArrowRight</SkinArrowRightSelected>
       <Rect>
         <X>500</X>
-        <Y>520</Y>
+        <Y>524</Y>
         <W>715</W>
         <H>50</H>
         <Z>0</Z>
       </Rect>
       <RectArrowLeft>
         <X>505</X>
-        <Y>525</Y>
+        <Y>529</Y>
         <W>40</W>
         <H>40</H>
         <Z>0</Z>
       </RectArrowLeft>
       <RectArrowRight>
         <X>1170</X>
-        <Y>525</Y>
+        <Y>529</Y>
         <W>40</W>
         <H>40</H>
         <Z>0</Z>
@@ -766,48 +864,8 @@
       <TextStyle>Bold</TextStyle>
       <NumVisible>7</NumVisible>
     </SelectSlide>
-    <SelectSlide Name="SelectSlideDelay">
-      <Skin/>
-      <SkinArrowLeft>SelectSlideArrowLeft</SkinArrowLeft>
-      <SkinArrowRight>SelectSlideArrowRight</SkinArrowRight>
-      <SkinSelected>SelectSlide</SkinSelected>
-      <SkinArrowLeftSelected>SelectSlideArrowLeft</SkinArrowLeftSelected>
-      <SkinArrowRightSelected>SelectSlideArrowRight</SkinArrowRightSelected>
-      <Rect>
-        <X>500</X>
-        <Y>160</Y>
-        <W>715</W>
-        <H>50</H>
-        <Z>0</Z>
-      </Rect>
-      <RectArrowLeft>
-        <X>505</X>
-        <Y>165</Y>
-        <W>40</W>
-        <H>40</H>
-        <Z>0</Z>
-      </RectArrowLeft>
-      <RectArrowRight>
-        <X>1170</X>
-        <Y>165</Y>
-        <W>40</W>
-        <H>40</H>
-        <Z>0</Z>
-      </RectArrowRight>
-      <Color Name="SelectSlideColor" />
-      <SelColor Name="SelectSlideSelColor" />
-      <ArrowColor Name="ArrowColor" />
-      <ArrowSelColor Name="ArrowSelColor" />
-      <TextColor Name="TextColorAlpha" />
-      <TextSelColor Name="TextSelColor" />
-      <TextH>27</TextH>
-      <TextRelativeX>50</TextRelativeX>
-      <TextRelativeY>0</TextRelativeY>
-      <TextMaxW>120</TextMaxW>
-      <TextFont>Outline</TextFont>
-      <TextStyle>Bold</TextStyle>
-      <NumVisible>5</NumVisible>
-    </SelectSlide>
+   
+    
   </SelectSlides>
   <SingNotes />
   <NameSelections />
@@ -816,7 +874,7 @@
       <Skin/>
       <Rect>
         <X>270</X>
-        <Y>220</Y>
+        <Y>259</Y>
         <W>100</W>
         <H>40</H>
         <Z>-1</Z>
@@ -835,7 +893,7 @@
       <Skin/>
       <Rect>
         <X>270</X>
-        <Y>280</Y>
+        <Y>312</Y>
         <W>100</W>
         <H>40</H>
         <Z>-1</Z>
@@ -854,7 +912,7 @@
       <Skin/>
       <Rect>
         <X>270</X>
-        <Y>340</Y>
+        <Y>365</Y>
         <W>100</W>
         <H>40</H>
         <Z>-1</Z>
@@ -873,7 +931,7 @@
       <Skin/>
       <Rect>
         <X>270</X>
-        <Y>400</Y>
+        <Y>418</Y>
         <W>100</W>
         <H>40</H>
         <Z>-1</Z>
@@ -892,7 +950,7 @@
       <Skin/>
       <Rect>
         <X>270</X>
-        <Y>460</Y>
+        <Y>471</Y>
         <W>100</W>
         <H>40</H>
         <Z>-1</Z>
@@ -911,7 +969,7 @@
       <Skin/>
       <Rect>
         <X>270</X>
-        <Y>520</Y>
+        <Y>524</Y>
         <W>100</W>
         <H>40</H>
         <Z>-1</Z>
